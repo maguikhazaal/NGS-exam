@@ -131,4 +131,78 @@ data_select_chrom %>%
 
 ![image](https://user-images.githubusercontent.com/83076900/148071664-d7c7a214-9e4e-41d8-94e1-3bdffd6e46f6.png)
 
+This representation however is not very informative. We will represent the PHRED quality distribution on the whole genome and by chromosome based on the bp position. 
 
+```
+data_select_chrom %>% 
+  filter(QUAL != 999) %>% 
+  ggplot(aes(POS, QUAL, fill = CHROM)) + 
+  geom_boxplot() +
+  theme(legend.key.height= unit(0.25, 'cm'), legend.key.width= unit(0.25, 'cm'), legend.key.size = unit(1, 'cm')) +
+  xlab('POSITION') + 
+  ylab('QUALITY (PHRED Score)') + 
+  scale_y_log10() +
+  scale_x_log10() +
+  ggtitle("Distribution of PHRED quality over Whole Genome and by Chromosome")
+ ```
+![image](https://user-images.githubusercontent.com/83076900/148072208-e15dc05b-4831-40f8-96b0-60035b9cf646.png)
+
+To make it even clearer, we will define background colors depending on the PHRED score range, as follows: 
+Zone1 : score 0-20 (yellow)
+Zone2 : score 20 - 60 (green)
+Zone3 : score 60 - 400 (red) 
+
+```
+data.frame(
+  ymin = c(0, 20, 60),
+  ymax = c(20, 60, 400),
+  Colour = c("yellow", "lawngreen", "violetred2")) ->
+  quals
+
+
+data_select_chrom %>% 
+  filter(QUAL != 999) %>% 
+  ggplot() +
+    geom_rect(aes(ymin = ymin, ymax = ymax, fill = Colour),
+              xmin = -Inf,
+              xmax = Inf,
+              alpha=0.3,
+              data = quals,
+              show.legend = FALSE) +
+    scale_fill_identity() +
+    geom_boxplot(aes(POS, QUAL, colour = CHROM), outlier.colour = NA) +
+    theme(legend.key.height= unit(0.25, 'cm'), legend.key.width= unit(0.25, 'cm'), legend.key.size = unit(1, 'cm')) +
+    xlab('POSITION') + 
+    ylab('QUALITY (PHRED Score)') + 
+    scale_y_log10() +
+    scale_x_log10() +
+    ggtitle("Distribution of PHRED quality over Whole Genome and by Chromosome")
+
+ ```
+![image](https://user-images.githubusercontent.com/83076900/148073321-6b09618e-d547-4bd2-89b9-49c1aadcd95e.png)
+
+
+
+
+
+Alternatively, we can represent the PHRED quality distribution on each chromosome using a boxplot
+
+```
+  data_select_chrom %>% 
+    filter(QUAL != 999) %>%
+    ggplot() +
+    geom_rect(aes(ymin = ymin, ymax = ymax, fill = Colour),
+              xmin = -Inf,
+              xmax = Inf,
+              alpha=0.5,
+              data = quals,
+              show.legend = FALSE) +
+    scale_fill_identity() +
+    geom_boxplot(aes(CHROM, QUAL, fill = "grey78"), outlier.colour = NA) +
+    geom_smooth(aes(CHROM, QUAL, group = 1), colour = "blue") +
+    scale_y_log10() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.key.size = unit(0.25, 'cm')) +
+    xlab("Chromosome")+
+    ylab("PHRED Quality") + 
+    ggtitle("Distribution of PHRED quality by chromosome")
+```
