@@ -1,11 +1,16 @@
 # NGS-exam
 
 On Gitbash 
+### I. Create directory 
+We will create a directory 'unix_final_exam' and work in the data file 
+```
+mkdir -p projects/unix_final_exam/data
+```
+
+### II. Prepare the data
+#### 1. Import data and define variable
 First, we need to import the data from the shared data file /data-shared/vcf_examples/luscinia_vars.vcf.gz .  
 We will store the file in a variable called _INPUT_ to make it easier to call it.
-
-### Prepare the data
-#### 1. Import data and define variable
 ```
 INPUT=/data-shared/vcf_examples/luscinia_vars.vcf.gz
 ```
