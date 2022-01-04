@@ -42,12 +42,12 @@ The '#' symbole before CHROM is not necessary, we will remove it as well, using 
 ####  6.Save data as tsv file
 We will save the output file, that is, the "clean" data, in a _tab seperated variable_ format.
 ```
-<$INPUT zcat | grep -v "^##" | cut -f1-2,4-6 | tail -c +2  > ~/projects/finalexam/data/luscinia_vars.tsv
+<$INPUT zcat | grep -v "^##" | cut -f1-2,6 | tail -c +2  > ~/projects/unix_final_exam/data/luscinia_vars.tsv
 ```
 
 #### 7. *_(OPTIONAL)_* Exclude the random , unmapped , and Ambiguous chromosomes:
 We notice that for some chromosomes, they have the label 'random' (_random), unmapped (_Un ; _Unmapped), and 'ambiguous' (_Amb)._ We hypothesize that we can exclude these chromosomes from our analysis. We will remove it using the _grep -v_ function again, and store the new data file under the name 'luscinia_vars_select_chrom.tsv
 
 ```
-<$INPUT zcat | grep -v "^##" | grep -v "random\>" | grep -v "Unmapped\>" | grep -v "Un\>" | grep -v "Amb\>" | cut -f1-2,6 | tail -c +2  > ~/projects/finalexam/data/luscinia_vars_select_chrom.tsv
+<$INPUT zcat | grep -v "^##" | grep -v "random\>" | grep -v "Unmapped\>" | grep -v "Un\>" | grep -v "Amb\>" | cut -f1-2,6 | tail -c +2  > ~/projects/unix_final_exam/data/luscinia_vars_select_chrom.tsv
 ```
