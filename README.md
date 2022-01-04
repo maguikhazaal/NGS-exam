@@ -1,3 +1,8 @@
+# MB170C47: UNIX and work with genomic data
+The present repository contains one solution to the final task in the MB170C47 course: "Unix and Work with Genomic Data" from the Faculty of Science, Charles University, Prague. 
+This project is based on the sample vcf file /luscinia_vars.vcf.gz available on the shared data prepared for the course. The data file contains genomic information about the luscinia species that can be used in various analyses. In this part, we will be analyzing the distribution of the PHRED qualities on the whole genome and by chromosome. 
+The project will be carried out in two parts: processing the vcf file in Unix, and a graphical representation in R. 
+
 # PROCESSING DATA IN UNIX
 
 ### I. Create directory 
