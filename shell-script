@@ -1,15 +1,18 @@
-#On gitbash
-#Optional, create directory. If needed, remove the '#' symbole before the next line
+#ON GITBASH
 
+#1. Optional, create directory. If needed, remove the '#' symbole before the next line
+#-------------------------------------
 #mkdir -p projects/unix_final_exam/data
 
-#Import data and assign variable "INPUT"
+#2. Import data and assign variable "INPUT"
+#------------------------------------------
 INPUT=/data-shared/vcf_examples/luscinia_vars.vcf.gz
 
-#Unzip data file using zcat, remove header using grep -v, filter out chosen columns (CHROM, POS, QUAL) corresponding to columns 1,2 and 6, using cut, and remove '#' symbole bfore CHROM using tail.
+#3. Unzip data file using zcat, remove header using grep -v, filter out chosen columns (CHROM, POS, QUAL) corresponding to columns 1,2 and 6, using cut, and remove '#' symbole bfore CHROM using tail.
 #Save resulting output as a tab seperated variable file. 
+#------------------------------------------------------------
 <$INPUT zcat | grep -v "^##" | cut -f1-2,6 | tail -c +2  > ~/projects/unix_final_exam/data/luscinia_vars.tsv
 
-#Filter out chromosomes labeled 'Random', 'Unmapped', or 'Ambiguous' from file. Save output as luscinia_vars_select_chrom.tsv
-
+#4. Filter out chromosomes labeled 'Random', 'Unmapped', or 'Ambiguous' from file. Save output as luscinia_vars_select_chrom.tsv
+#----------------------------------------------------------------------------------------------------------------------------------
 <$INPUT zcat | grep -v "^##" | grep -v "random\>" | grep -v "Unmapped\>" | grep -v "Un\>" | grep -v "Amb\>" | cut -f1-2,6 | tail -c +2  > ~/projects/unix_final_exam/data/luscinia_vars_select_chrom.tsv
