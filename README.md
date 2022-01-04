@@ -206,3 +206,4 @@ Alternatively, we can represent the PHRED quality distribution on each chromosom
     ylab("PHRED Quality") + 
     ggtitle("Distribution of PHRED quality by chromosome")
 ```
+![image](https://user-images.githubusercontent.com/83076900/148073584-6e21d56e-e743-43b9-9956-6d4e121a852e.png)
