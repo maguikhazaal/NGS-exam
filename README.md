@@ -58,5 +58,77 @@ We notice that for some chromosomes, they have the label 'random' (_random), unm
 
 ---
 # PROCESSING DATA IN R 
+### I. (Optional) Set working directory
+setwd("/home/user01/projects/unix_final_exam/plot_final_exam")
+
+### II. Prepare the data
+
+#### 1. Prepare library 
+```
+library (tidyverse)
+library (dplyr)
+library (ggplot)
+```
+
+### 2. Prepare data
+#### 2.1) Load input
+```
+read_tsv('~/projects/unix_final_exam/data/luscinia_vars_select_chrom.tsv') -> data_select_chrom
+View (data_select_chrom)
+```
+
+#### 2.2) Optional, Remove white space in POS and QUAL (for aesthetics)
+```
+data_select_chrom$POS <- trimws(data_select_chrom$POS, which = c("both"))
+data_select_chrom$QUAL <- trimws(data_select_chrom$QUAL, which = c("both"))
+```
+
+#### 2.3) Mutate CHROM from integer to factor
+```
+read_tsv('~/projects/finalexam/data/luscinia_vars_norandom.tsv') %>%
+  mutate(CHROM = as.factor(CHROM)) ->
+  data_select_chrom
+```
+
+### 3. Plots
+
+#### 3.1 Distribution of PHRED Quality over whole Genome
+```
+data_select_chrom %>% 
+  ggplot(aes(QUAL)) +
+  geom_histogram(binwidth=1) +
+  ylab("Count of variants") +
+  xlab("PHRED quality") +
+  ggtitle("Distribution of PHRED score quality on whole genome wrt to Count of Variants")
+```
+
+We notice that that some observations have a PHRED quality score of 999, which probably corresponds to an error of some sort. We will consider these values NA and exclude them from our analysis. 
+
+```
+data_select_chrom %>% 
+  filter(QUAL < 999) %>% 
+  ggplot(aes(QUAL)) +
+  geom_histogram(binwidth=1) +
+  ylab("Count of variants") +
+  xlab("PHRED quality") +
+  ggtitle("Distribution of PHRED score quality on whole genome wrt Count of Variants")
+```
+
+![image](https://user-images.githubusercontent.com/83076900/148071212-d1c9424b-cb59-4b5a-bcdf-0f8b1d7dd29f.png)
+
+For added information, we can group the chromosomes by colors
+
+```
+data_select_chrom %>% 
+  filter(QUAL != 999) %>% 
+  ggplot(aes(QUAL, colour = CHROM, group = CHROM)) +
+  geom_histogram(binwidth=1) +
+  ylab("Count of variants") +
+  xlab("PHRED quality") +
+  ggtitle("Distribution of PHRED score quality on whole genome wrt Count of Variants") +
+  theme(legend.key.height= unit(0.25, 'cm'), legend.key.width= unit(0.25, 'cm'), legend.key.size = unit(0.5, 'cm'))
+```
+
+![image](https://user-images.githubusercontent.com/83076900/148071664-d7c7a214-9e4e-41d8-94e1-3bdffd6e46f6.png)
 
 
