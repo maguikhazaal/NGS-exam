@@ -1,6 +1,5 @@
-# NGS-exam
+# PROCESSING DATA IN UNIX
 
-On Gitbash 
 ### I. Create directory 
 We will create a directory 'unix_final_exam' and work in the data file 
 ```
@@ -51,3 +50,8 @@ We notice that for some chromosomes, they have the label 'random' (_random), unm
 ```
 <$INPUT zcat | grep -v "^##" | grep -v "random\>" | grep -v "Unmapped\>" | grep -v "Un\>" | grep -v "Amb\>" | cut -f1-2,6 | tail -c +2  > ~/projects/unix_final_exam/data/luscinia_vars_select_chrom.tsv
 ```
+
+---
+# PROCESSING DATA IN R 
+
+
