@@ -107,58 +107,86 @@ read_tsv('~/projects/finalexam/data/luscinia_vars_norandom.tsv') %>%
 
 #### 3.1 Distribution of PHRED Quality over whole Genome
 ```
-data_select_chrom %>% 
+p1 = data_select_chrom %>%
   ggplot(aes(QUAL)) +
   geom_histogram(binwidth=1) +
   ylab("Count of variants") +
   xlab("PHRED quality") +
   ggtitle("Distribution of PHRED score quality on whole genome wrt to Count of Variants")
+
+plot (p1)
 ```
 
 We notice that that some observations have a PHRED quality score of 999, which probably corresponds to an error of some sort. We will consider these values NA and exclude them from our analysis. 
+Each plot will be saved a a PDF and a JPG file. 
 
 ```
-data_select_chrom %>% 
-  filter(QUAL < 999) %>% 
+p2 = data_select_chrom %>% 
+  filter(QUAL != 999) %>% 
   ggplot(aes(QUAL)) +
   geom_histogram(binwidth=1) +
   ylab("Count of variants") +
   xlab("PHRED quality") +
   ggtitle("Distribution of PHRED score quality on whole genome wrt Count of Variants")
-```
 
-![image](https://user-images.githubusercontent.com/83076900/148071212-d1c9424b-cb59-4b5a-bcdf-0f8b1d7dd29f.png)
+pdf("results/phred-genome-cov.pdf",w=10,h=8)
+plot(p2)
+dev.off()
+
+jpeg("results/phred-genome-cov.jpg",w=10,h=8)
+plot(p2)
+dev.off()
+```
+![image](https://user-images.githubusercontent.com/83076900/148205922-673610a3-1e10-43f0-808e-0f9bc64828df.png)
+
 
 For added information, we can group the chromosomes by colors
 
 ```
-data_select_chrom %>% 
+p3 = data_select_chrom %>% 
   filter(QUAL != 999) %>% 
   ggplot(aes(QUAL, colour = CHROM, group = CHROM)) +
   geom_histogram(binwidth=1) +
   ylab("Count of variants") +
   xlab("PHRED quality") +
-  ggtitle("Distribution of PHRED score quality on whole genome wrt Count of Variants") +
+  ggtitle("Distribution of PHRED score quality on whole genome wrt Count of Variants by chrom") +
   theme(legend.key.height= unit(0.25, 'cm'), legend.key.width= unit(0.25, 'cm'), legend.key.size = unit(0.5, 'cm'))
+
+pdf("results/phred-genome-cov-by-chrom.pdf",w=10,h=8)
+plot(p3)
+dev.off()
+
+jpeg("results/phred-genome-cov-by-chrom.jpg",w=10,h=8)
+plot(p3)
+dev.off()
 ```
 
-![image](https://user-images.githubusercontent.com/83076900/148071664-d7c7a214-9e4e-41d8-94e1-3bdffd6e46f6.png)
+![image](https://user-images.githubusercontent.com/83076900/148206051-c4b8457e-b1e0-49bc-bd8c-9f438cea593b.png)
 
 This representation however is not very informative. We will represent the PHRED quality distribution on the whole genome and by chromosome based on the bp position. 
 
 ```
-data_select_chrom %>% 
+p4 = data_select_chrom %>% 
   filter(QUAL != 999) %>% 
-  ggplot(aes(POS, QUAL, fill = CHROM)) + 
+  ggplot(aes(POS, QUAL, colour = CHROM)) + 
   geom_boxplot() +
   theme(legend.key.height= unit(0.25, 'cm'), legend.key.width= unit(0.25, 'cm'), legend.key.size = unit(1, 'cm')) +
   xlab('POSITION') + 
   ylab('QUALITY (PHRED Score)') + 
   scale_y_log10() +
   scale_x_log10() +
-  ggtitle("Distribution of PHRED quality over Whole Genome and by Chromosome")
+  ggtitle("Distribution of PHRED quality over Whole Genome and by Chromosome wrt Position")
+
+pdf("results/phred-genome-pos-by-chrom.pdf",w=10,h=8)
+plot(p4)
+dev.off()
+
+jpeg("results/phred-genome-pos-by-chrom.jpg",w=10,h=8)
+plot(p4)
+dev.off()
  ```
-![image](https://user-images.githubusercontent.com/83076900/148072208-e15dc05b-4831-40f8-96b0-60035b9cf646.png)
+![image](https://user-images.githubusercontent.com/83076900/148206280-f64b5174-06c7-41a1-a509-41b9fd469e18.png)
+
 
 To make it even clearer, we will define background colors depending on the PHRED score range, as follows: 
 Zone1 : score 0-20 (yellow)
@@ -169,14 +197,14 @@ Zone3 : score 60 - 400 (red)
 data.frame(
   ymin = c(0, 20, 60),
   ymax = c(20, 60, 400),
-  Colour = c("yellow", "lawngreen", "violetred2")) ->
+  colour = c("yellow", "lawngreen", "violetred2")) ->
   quals
 
 
-data_select_chrom %>% 
+  p5 = data_select_chrom %>% 
   filter(QUAL != 999) %>% 
   ggplot() +
-    geom_rect(aes(ymin = ymin, ymax = ymax, fill = Colour),
+    geom_rect(aes(ymin = ymin, ymax = ymax, fill = colour),
               xmin = -Inf,
               xmax = Inf,
               alpha=0.3,
@@ -189,34 +217,49 @@ data_select_chrom %>%
     ylab('QUALITY (PHRED Score)') + 
     scale_y_log10() +
     scale_x_log10() +
-    ggtitle("Distribution of PHRED quality over Whole Genome and by Chromosome")
+    ggtitle("Distribution of PHRED quality over Whole Genome and by Chromosome wrt Position")
+  
+  pdf("results/phred-genome-pos-by-chrom-wzone.pdf",w=10,h=8)
+  plot(p5)
+  dev.off()
+  
+  jpeg("results/phred-genome-pos-by-chrom-wzone.jpg",w=10,h=8)
+  plot(p5)
+  dev.off()
 
  ```
-![image](https://user-images.githubusercontent.com/83076900/148073321-6b09618e-d547-4bd2-89b9-49c1aadcd95e.png)
-
-
+![image](https://user-images.githubusercontent.com/83076900/148206541-fc709918-c7bf-4298-912f-823e0f01dadc.png)
 
 
 
 Alternatively, we can represent the PHRED quality distribution on each chromosome using a boxplot
 
 ```
-  data_select_chrom %>% 
+  p6 = data_select_chrom %>% 
     filter(QUAL != 999) %>%
     ggplot() +
-    geom_rect(aes(ymin = ymin, ymax = ymax, fill = Colour),
+    geom_rect(aes(ymin = ymin, ymax = ymax, fill = colour),
               xmin = -Inf,
               xmax = Inf,
               alpha=0.5,
               data = quals,
               show.legend = FALSE) +
     scale_fill_identity() +
-    geom_boxplot(aes(CHROM, QUAL, fill = "grey78"), outlier.colour = NA) +
+    geom_boxplot(aes(CHROM, QUAL, fill = "grey78")) +
     geom_smooth(aes(CHROM, QUAL, group = 1), colour = "blue") +
     scale_y_log10() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.key.size = unit(0.25, 'cm')) +
     xlab("Chromosome")+
     ylab("PHRED Quality") + 
     ggtitle("Distribution of PHRED quality by chromosome")
+  
+pdf("results/phred-by-chrom.pdf",w=10,h=8)
+plot(p6)
+dev.off()
+
+jpeg("results/phred-by-chrom.jpg",w=10,h=8)
+plot(p6)
+dev.off()
 ```
-![image](https://user-images.githubusercontent.com/83076900/148073584-6e21d56e-e743-43b9-9956-6d4e121a852e.png)
+
+![image](https://user-images.githubusercontent.com/83076900/148206663-85ed34f1-1cb1-4002-acef-fa03e81e50a1.png)
