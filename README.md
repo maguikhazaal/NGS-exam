@@ -118,7 +118,7 @@ plot (p1)
 ```
 
 We notice that that some observations have a PHRED quality score of 999, which probably corresponds to an error of some sort. We will consider these values NA and exclude them from our analysis. 
-Each plot will be saved a a PDF and a JPG file. 
+Each plot will be saved a a PDF file. 
 
 ```
 p2 = data_select_chrom %>% 
@@ -130,10 +130,6 @@ p2 = data_select_chrom %>%
   ggtitle("Distribution of PHRED score quality on whole genome wrt Count of Variants")
 
 pdf("results/phred-genome-cov.pdf",w=10,h=8)
-plot(p2)
-dev.off()
-
-jpeg("results/phred-genome-cov.jpg",w=10,h=8)
 plot(p2)
 dev.off()
 ```
@@ -156,9 +152,6 @@ pdf("results/phred-genome-cov-by-chrom.pdf",w=10,h=8)
 plot(p3)
 dev.off()
 
-jpeg("results/phred-genome-cov-by-chrom.jpg",w=10,h=8)
-plot(p3)
-dev.off()
 ```
 
 ![image](https://user-images.githubusercontent.com/83076900/148206051-c4b8457e-b1e0-49bc-bd8c-9f438cea593b.png)
@@ -181,9 +174,7 @@ pdf("results/phred-genome-pos-by-chrom.pdf",w=10,h=8)
 plot(p4)
 dev.off()
 
-jpeg("results/phred-genome-pos-by-chrom.jpg",w=10,h=8)
-plot(p4)
-dev.off()
+
  ```
 ![image](https://user-images.githubusercontent.com/83076900/148206280-f64b5174-06c7-41a1-a509-41b9fd469e18.png)
 
@@ -222,10 +213,7 @@ data.frame(
   pdf("results/phred-genome-pos-by-chrom-wzone.pdf",w=10,h=8)
   plot(p5)
   dev.off()
-  
-  jpeg("results/phred-genome-pos-by-chrom-wzone.jpg",w=10,h=8)
-  plot(p5)
-  dev.off()
+
 
  ```
 ![image](https://user-images.githubusercontent.com/83076900/148206541-fc709918-c7bf-4298-912f-823e0f01dadc.png)
@@ -257,9 +245,6 @@ pdf("results/phred-by-chrom.pdf",w=10,h=8)
 plot(p6)
 dev.off()
 
-jpeg("results/phred-by-chrom.jpg",w=10,h=8)
-plot(p6)
-dev.off()
 ```
 
 ![image](https://user-images.githubusercontent.com/83076900/148206663-85ed34f1-1cb1-4002-acef-fa03e81e50a1.png)
