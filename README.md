@@ -5,10 +5,23 @@ The project will be carried out in two parts: processing the vcf file in Unix, a
 
 # PROCESSING DATA IN UNIX
 
-### I. Create directory 
+### I. Prepare working space
+#### 1. Create directory 
 We will create a directory 'unix_final_exam' and work in the data file 
 ```
 mkdir -p projects/unix_final_exam/data
+```
+
+#### 2. Note and save working code 
+
+```
+cd projects/unix_final_exam
+nano unix_final_exam_workflow.sh
+```
+
+#### 3. Make script executable
+```
+chmod +x unix_final_exam_workflow.sh
 ```
 
 ### II. Prepare the data
