@@ -157,26 +157,35 @@ dev.off()
 ![image](https://user-images.githubusercontent.com/83076900/148206051-c4b8457e-b1e0-49bc-bd8c-9f438cea593b.png)
 
 This representation however is not very informative. We will represent the PHRED quality distribution on the whole genome and by chromosome based on the bp position. 
+We will do so using geome line.
 
 ```
-p4 = data_select_chrom %>% 
-  filter(QUAL != 999) %>% 
-  ggplot(aes(POS, QUAL, colour = CHROM)) + 
-  geom_boxplot() +
-  theme(legend.key.height= unit(0.25, 'cm'), legend.key.width= unit(0.25, 'cm'), legend.key.size = unit(1, 'cm')) +
-  xlab('POSITION') + 
-  ylab('QUALITY (PHRED Score)') + 
-  scale_y_log10() +
-  scale_x_log10() +
-  ggtitle("Distribution of PHRED quality over Whole Genome and by Chromosome wrt Position")
-
+  data_select_chrom %>%
+    group_by(CHROM) %>%
+    mutate(POS_block = plyr::round_any(POS, 1e4)) ->
+    data_pos_block
+  
+p4l =  data_pos_block  %>% 
+    filter(QUAL != 999) %>% 
+    group_by(CHROM, POS_block) %>%
+    summarise(QUAL = n()) %>%
+    ggplot() + 
+    geom_line(aes(POS_block, QUAL)) +
+    facet_wrap(~CHROM, ncol = 4) +
+    scale_x_log10() +
+    scale_y_log10() +
+    xlab('POSITION') + 
+    ylab('QUALITY (PHRED Score)') + 
+    ggtitle("Distribution of PHRED quality by Chromosome wrt Position") 
+  
 pdf("results/phred-genome-pos-by-chrom.pdf",w=10,h=8)
-plot(p4)
+plot(p4l)
 dev.off()
 
+```
+![image](https://user-images.githubusercontent.com/83076900/148547204-7566e7d0-8f57-4723-80f3-f68921580a40.png)
 
- ```
-![image](https://user-images.githubusercontent.com/83076900/148206280-f64b5174-06c7-41a1-a509-41b9fd469e18.png)
+
 
 
 To make it even clearer, we will define background colors depending on the PHRED score range, as follows: 
@@ -187,36 +196,36 @@ Zone3 : score 60 - 400 (red)
 ```
 data.frame(
   ymin = c(0, 20, 60),
-  ymax = c(20, 60, 400),
+  ymax = c(20, 60, 300),
   colour = c("yellow", "lawngreen", "violetred2")) ->
   quals
 
+p5l = data_pos_block  %>% 
+  filter(QUAL != 999) %>%
+  group_by(CHROM, POS_block) %>%
+  summarise(QUAL = n()) %>%
+  ggplot() +  
+  geom_rect(aes(ymin = ymin, ymax = ymax, fill = colour),
+            xmin = -Inf,
+            xmax = Inf,
+            alpha=0.3,
+            data = quals,
+            show.legend = FALSE) +
+  scale_fill_identity() +
+  geom_line(aes(POS_block, QUAL)) +
+  facet_wrap(~CHROM, ncol = 4)+
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab('POSITION') + 
+  ylab('QUALITY (PHRED Score)') + 
+  ggtitle("Distribution of PHRED quality by Chromosome wrt Position")
 
-  p5 = data_select_chrom %>% 
-  filter(QUAL != 999) %>% 
-  ggplot() +
-    geom_rect(aes(ymin = ymin, ymax = ymax, fill = colour),
-              xmin = -Inf,
-              xmax = Inf,
-              alpha=0.3,
-              data = quals,
-              show.legend = FALSE) +
-    scale_fill_identity() +
-    geom_boxplot(aes(POS, QUAL, colour = CHROM), outlier.colour = NA) +
-    theme(legend.key.height= unit(0.25, 'cm'), legend.key.width= unit(0.25, 'cm'), legend.key.size = unit(1, 'cm')) +
-    xlab('POSITION') + 
-    ylab('QUALITY (PHRED Score)') + 
-    scale_y_log10() +
-    scale_x_log10() +
-    ggtitle("Distribution of PHRED quality over Whole Genome and by Chromosome wrt Position")
-  
-  pdf("results/phred-genome-pos-by-chrom-wzone.pdf",w=10,h=8)
-  plot(p5)
-  dev.off()
-
-
+pdf("results/phred-pos-by-chrom-wzone.pdf",w=10,h=8)
+plot(p5l)
+dev.off()
  ```
-![image](https://user-images.githubusercontent.com/83076900/148206541-fc709918-c7bf-4298-912f-823e0f01dadc.png)
+ 
+ ![image](https://user-images.githubusercontent.com/83076900/148547139-82c8851f-502d-43c0-b5de-55360485e704.png)
 
 
 
